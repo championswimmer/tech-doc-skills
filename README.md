@@ -36,6 +36,29 @@ npx skills add championswimmer/tech-doc-skills -s mermaid-diagrams
 npx skills add championswimmer/tech-doc-skills -s web-research
 ```
 
+## Shared MCP config
+
+This repo now also includes a project-level `.mcp.json` with shared MCP server definitions for:
+
+- `context7`
+- `perplexity`
+- `parallel-search`
+- `exa`
+
+Why `.mcp.json`:
+- **Claude Code** reads project MCP servers from `.mcp.json`
+- **Pi + `pi-mcp-adapter`** also reads the standard shared `.mcp.json`
+
+Required environment variables:
+
+```bash
+export PERPLEXITY_API_KEY=...
+export PARALLEL_API_KEY=...
+export EXA_API_KEY=...
+```
+
+`context7` does not need an API key in this config.
+
 ## What these skills do
 
 ### `mermaid-diagrams`
