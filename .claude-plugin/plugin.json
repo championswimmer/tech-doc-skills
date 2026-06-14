@@ -1,0 +1,9 @@
+{
+  "name": "tech-doc-skills",
+  "description": "Portable skills for technical docs, RFC writing, Mermaid diagrams, and evidence-backed web research.",
+  "version": "0.1.0",
+  "author": "championswimmer",
+  "skills": [
+    "./skills"
+  ]
+}
