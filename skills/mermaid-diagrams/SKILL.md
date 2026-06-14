@@ -159,6 +159,9 @@ Before finalizing Mermaid changes:
 ## References
 
 Read these as needed:
-- `references/diagram-types.md` — small working examples for major Mermaid diagram types
+- `references/diagram-types.md` — small working examples for major Mermaid diagram types; use the deeper per-type docs only when a flowchart, ER, or gantt diagram gets complex
+- `references/flowchart-keywords.md` — flowchart / graph keywords, edge operators, subgraphs, shapes, and gotchas
+- `references/er-keywords.md` — ER relationship syntax, cardinality markers, attributes, keys, and layout
+- `references/gantt-keywords.md` — gantt task metadata, dates, dependencies, sections, tags, and exclusions
 - `references/rfc-diagram-patterns.md` — doc/RFC-friendly patterns with colors, groups, and recommended use cases
 - `references/official-sources.md` — official Mermaid docs and validation notes

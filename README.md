@@ -39,6 +39,9 @@ Includes:
 - `scripts/validate-mermaid.js`
 - `scripts/new-mermaid-template.js`
 - `references/diagram-types.md`
+- `references/flowchart-keywords.md`
+- `references/er-keywords.md`
+- `references/gantt-keywords.md`
 - `references/rfc-diagram-patterns.md`
 - `references/official-sources.md`
 

@@ -2,6 +2,12 @@
 
 These examples are designed to be copied into Markdown docs, RFCs, ADRs, and architecture notes. Start small, then style.
 
+For most work, this file is enough. Only open the deeper per-type references when you are building a more complex diagram or need exact keyword semantics:
+
+- `flowchart` / `graph` -> `references/flowchart-keywords.md`
+- `erDiagram` -> `references/er-keywords.md`
+- `gantt` -> `references/gantt-keywords.md`
+
 ## 1) Flowchart / graph
 
 Use for system context, component overview, request path, or decision tree.
