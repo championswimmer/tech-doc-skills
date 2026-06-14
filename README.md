@@ -2,27 +2,27 @@
 
 Portable agent skills for writing technical docs and RFCs.
 
-This repository packages two reusable skills that work across **Claude Code**, **OpenAI Codex**, **OpenCode**, and **Pi**:
+This repo is the canonical source for two reusable skills:
 
 - `mermaid-diagrams` — write, style, template, and validate Mermaid diagrams for architecture notes, RFCs, ADRs, and READMEs
 - `web-research` — gather current technical evidence with a clear query strategy, source-quality rules, and failover across search tools
 
+These skills are designed to work with **Claude Code**, **OpenAI Codex**, **OpenCode**, and **Pi** through the same canonical `skills/` tree.
+
 ## Install
 
-Use the `skills` CLI to install the bundle from this GitHub repo:
+Install the bundle from this GitHub repo:
 
 ```bash
 npx skills add championswimmer/tech-doc-skills
 ```
 
-Install just one skill if you want a narrower setup:
+Install only one skill if you want a narrower setup:
 
 ```bash
 npx skills add championswimmer/tech-doc-skills -s mermaid-diagrams
 npx skills add championswimmer/tech-doc-skills -s web-research
 ```
-
-You can also point `skills` at the repository directly from GitHub or a local checkout if you prefer.
 
 ## What these skills do
 
@@ -31,7 +31,7 @@ You can also point `skills` at the repository directly from GitHub or a local ch
 Use this skill when you want to:
 - turn a design into a diagram
 - choose the right Mermaid diagram type
-- group things cleanly with subgraphs / boxes
+- group things cleanly with subgraphs and boxes
 - apply semantic colors for actors, control planes, data stores, success, and failure
 - validate Mermaid before publishing docs
 
@@ -57,21 +57,23 @@ Includes:
 - `references/source-quality.md`
 - `references/rfc-research-output-template.md`
 
-## How the repository is organized
+## Repository layout
 
-- `skills/` contains the canonical skill source
-- `.claude-plugin/plugin.json` describes the plugin bundle for Claude Code
-- `.agents/skills/`, `.claude/skills/`, `.opencode/skills/`, and `.pi/skills/` point back to the same skills for compatibility
-- `research/` contains the background notes that informed the bundle
-- `package.json` advertises the skill tree for Pi
-
-## What are skills, plugins, and MCP?
-
-- **Skill**: a reusable workflow package, centered on `SKILL.md`, with optional scripts and references
-- **Plugin**: a distributable wrapper that can ship one or more skills together
-- **MCP**: the protocol agents use to connect to external tools, resources, and prompts
-
-The design goal here is simple: keep the authoring guidance in the skill, keep the reusable bundle in the plugin, and let each agent discover the same canonical content.
+```text
+.
+├── README.md
+├── LICENSE
+├── package.json
+└── skills/
+    ├── mermaid-diagrams/
+    │   ├── SKILL.md
+    │   ├── references/
+    │   └── scripts/
+    └── web-research/
+        ├── SKILL.md
+        ├── references/
+        └── scripts/
+```
 
 ## Validate locally
 
@@ -80,11 +82,6 @@ npm run validate:mermaid
 npm run validate:research
 npm run validate
 ```
-
-## Supporting research
-
-- [`research/agent-skills-plugins-and-mcp.md`](research/agent-skills-plugins-and-mcp.md)
-- [`research/distribution-matrix.md`](research/distribution-matrix.md)
 
 ## License
 
