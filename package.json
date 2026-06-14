@@ -1,0 +1,29 @@
+{
+  "name": "tech-doc-skills",
+  "version": "0.1.0",
+  "description": "Portable Agent Skills for technical documentation, RFC writing, Mermaid diagrams, and web research.",
+  "keywords": [
+    "agent-skills",
+    "skills.sh",
+    "pi-package",
+    "claude-code",
+    "codex",
+    "opencode",
+    "pi",
+    "mermaid",
+    "rfc",
+    "tech-docs",
+    "web-research"
+  ],
+  "license": "MIT",
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
+  },
+  "scripts": {
+    "validate:mermaid": "node skills/mermaid-diagrams/scripts/validate-mermaid.js --self-test-styles skills/mermaid-diagrams/references",
+    "validate:research": "node skills/web-research/scripts/research-plan.js --self-test",
+    "validate": "npm run validate:mermaid && npm run validate:research"
+  }
+}
