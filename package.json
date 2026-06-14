@@ -22,6 +22,7 @@
     ]
   },
   "scripts": {
+    "update:tokens": "node scripts/update-skill-token-counts.js",
     "validate:mermaid": "node skills/mermaid-diagrams/scripts/validate-mermaid.js --self-test-styles skills/mermaid-diagrams/references",
     "validate:research": "node skills/web-research/scripts/research-plan.js --self-test",
     "validate": "npm run validate:mermaid && npm run validate:research"
