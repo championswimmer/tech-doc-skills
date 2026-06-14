@@ -1,0 +1,58 @@
+{
+  "name": "tech-doc-skills",
+  "displayName": "Tech Doc Skills",
+  "version": "0.1.0",
+  "description": "Portable Claude Code plugin with reusable skills for Mermaid diagrams and technical web research, plus bundled MCP server definitions for Exa, Parallel Search, Perplexity, and Context7.",
+  "author": {
+    "name": "championswimmer",
+    "url": "https://github.com/championswimmer"
+  },
+  "homepage": "https://github.com/championswimmer/tech-doc-skills",
+  "repository": "https://github.com/championswimmer/tech-doc-skills",
+  "license": "MIT",
+  "keywords": [
+    "claude-code-plugin",
+    "skills",
+    "mermaid",
+    "web-research",
+    "mcp",
+    "docs",
+    "rfc"
+  ],
+  "skills": "./skills",
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "perplexity": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@perplexity-ai/mcp-server"
+      ],
+      "env": {
+        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
+      }
+    },
+    "parallel-search": {
+      "url": "https://search.parallel.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${PARALLEL_API_KEY}"
+      }
+    },
+    "exa": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "exa-mcp-server"
+      ],
+      "env": {
+        "EXA_API_KEY": "${EXA_API_KEY}"
+      }
+    }
+  }
+}

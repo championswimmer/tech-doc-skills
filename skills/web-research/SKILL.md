@@ -1,165 +1,63 @@
 ---
 name: web-research
-description: Use this skill when asked to research current technical information for docs, RFCs, ADRs, design notes, build-vs-buy analysis, API usage, release notes, benchmarks, or ecosystem comparisons. Prioritizes official sources, multi-angle query planning, and explicit failover across Exa, parallel search, and Perplexity.
+description: Use this skill for current, source-backed technical research for docs, RFCs, ADRs, release notes, API usage, benchmarks, comparisons, or ecosystem questions. Best when Exa, Parallel Search, Perplexity, and Context7 MCP tools are available.
 license: MIT
-compatibility: Works best when Exa, Perplexity, and a parallel-search/web-search capability are available. If one provider is unavailable, follow the failover matrix and continue with the remaining tools.
+compatibility: Best with MCP servers `exa`, `parallel-search`, `perplexity`, and `context7`. `allowed-tools` is experimental and mainly useful in Claude Code-style runtimes.
+allowed-tools:
+  - mcp__exa__*
+  - mcp__parallel-search__*
+  - mcp__perplexity__*
+  - mcp__context7__*
 metadata:
   category: docs
-  tags: [research, rfc, docs, exa, perplexity, mcp]
+  tags: [research, rfc, docs, exa, perplexity, context7, parallel, mcp]
 ---
 
-Use this skill for evidence-backed web research that feeds technical docs and RFCs.
+Use this skill for current technical research with citations.
 
-## When to use it
+## Tool map
 
-- researching current APIs, libraries, releases, or standards
-- gathering evidence for an RFC or ADR
-- comparing tools, approaches, or vendors
-- finding official docs, changelogs, and source repositories
-- validating assumptions with up-to-date information
-- collecting citations and open questions before writing
+Prefer these MCP tools by name when available:
 
-## Default research workflow
+- `exa:web_search_exa` — first-pass semantic discovery; best for official docs, product pages, release notes, and likely canonical URLs
+- `exa:web_fetch_exa` — read chosen URLs as markdown
+- `parallel-search:web_search` — run 3-4 distinct query angles in parallel for breadth
+- `parallel-search:web_fetch` — fetch full text for URLs found via parallel search
+- `perplexity:perplexity_search` — ranked URL discovery when Exa is weak or unavailable
+- `perplexity:perplexity_ask` — quick synthesis or cross-check with citations after discovery
+- `context7:resolve-library-id` -> `context7:query-docs` — library/framework/API docs and code examples
+
+For Claude Code permission syntax, the same tools are usually named `mcp__server__tool`, for example `mcp__exa__web_search_exa`.
+
+## Default loop
 
 1. Restate the research goal in one sentence.
-2. Break it into 3-5 subquestions.
-3. Generate 3-6 diverse search angles instead of repeating the same query.
-4. Prioritize official docs and source repos first.
-5. Use at least two independent sources for any consequential claim.
-6. Read the best pages, not just snippets.
-7. Separate facts, inferences, and unresolved questions.
-8. Return citations or links for every non-obvious claim.
+2. Write 3-5 search angles: official docs, source repo, release notes, comparison, caveats.
+3. Start with `exa:web_search_exa`.
+4. Use `parallel-search:web_search` when one phrasing may miss results.
+5. Read real pages with `exa:web_fetch_exa` or `parallel-search:web_fetch`; do not rely only on snippets.
+6. Use `perplexity:perplexity_ask` only after reading enough sources to synthesize or cross-check.
+7. If the question is library-specific, call `context7:resolve-library-id` then `context7:query-docs`.
+8. Cite every non-obvious claim and mark uncertainty.
 
-## Preferred tool order
+## Routing rules
 
-### 1) Exa for discovery
+- library or API usage -> Context7 first, then web sources for release notes or ecosystem context
+- official docs / changelogs / vendor pages -> Exa first
+- broad comparisons or ecosystem scans -> Parallel Search first, then fetch
+- quick factual cross-check -> Perplexity ask
+- code-heavy topic -> add source repo and API docs; prefer implementation over blogs
 
-Use Exa first when you need semantically relevant pages, official docs, company pages, blog posts, release notes, or specific categories.
+## Minimum evidence standard
 
-Best uses:
-- find the best URLs quickly
-- find official sources before reading secondary commentary
-- discover recent high-signal pages around a topic
-
-### 2) Parallel search for breadth
-
-Use a parallel-search workflow next when you need several search angles explored at once.
-
-Best uses:
-- compare multiple approaches side-by-side
-- search official docs, GitHub, vendor blogs, and independent commentary in parallel
-- reduce query bias from a single phrasing
-
-If a dedicated parallel-search tool is not available, run multiple search queries via a batched web search, or issue several targeted Exa / Perplexity searches yourself.
-
-### 3) Perplexity for synthesis and cross-checking
-
-Use Perplexity after discovery for quick synthesis, summaries with citations, and fact cross-checking.
-
-Best uses:
-- summarize what multiple sources agree on
-- answer direct factual questions with citations
-- check whether an interpretation is broadly supported
-
-### 4) Fetch/read exact pages
-
-After discovery, read the pages that matter.
-
-Use page-fetching tools to:
-- inspect official documentation sections
-- read release notes and announcements fully
-- capture details hidden behind snippets
-- preserve exact links for later citation
-
-### 5) Code/doc search for implementation details
-
-If the question is partly about API usage or library behavior, complement web research with code/doc search or official docs lookup.
-
-## Failover matrix
-
-### If Exa is unavailable
-
-- use Perplexity search for URL discovery
-- or use a batched web search with 3-4 diverse queries
-- then fetch the best pages directly
-
-### If parallel search is unavailable
-
-- run multiple queries manually, each with a distinct angle
-- or use a batched web search that supports multiple queries
-- explicitly avoid asking the same question in near-duplicate wording
-
-### If Perplexity is unavailable
-
-- use Exa for discovery
-- fetch the top pages
-- synthesize manually from the retrieved content
-- quote the specific source URLs you used
-
-### If both Exa and Perplexity are unavailable
-
-- use any available web search plus page fetching
-- bias strongly toward official docs, source repositories, and release notes
-- note reduced confidence if source diversity is weak
-
-### If a page blocks extraction or snippets are insufficient
-
-- fetch the page directly with a readability/browser fallback
-- if still blocked, find mirrored docs, GitHub sources, or official reference pages
-
-### If the topic is code-heavy
-
-- use code/doc search and official documentation lookup in addition to web search
-- prefer source code, API docs, and release notes over forum summaries
-
-## Query design rules
-
-Good query sets vary by angle:
-- official docs angle
-- source repo / changelog angle
-- implementation / architecture angle
-- comparison / alternatives angle
-- recent updates angle
-
-Bad query sets repeat the same words with small changes.
-
-Use the helper script when you want a fast plan:
-
-```bash
-node ./scripts/research-plan.js "How are Claude plugins, Codex skills, OpenCode skills, Pi skills, and MCP servers distributed?"
-node ./scripts/research-plan.js "What changed in Mermaid v11 for RFC diagrams?" --queries 5
-node ./scripts/research-plan.js --self-test
-```
-
-## Source quality rules
-
-Prefer evidence in this order when possible:
-1. official docs / specifications
-2. source repositories and release notes
-3. vendor engineering blogs
-4. high-quality third-party deep dives
-5. community discussions for edge cases only
-
-For RFCs and technical docs:
-- call out publication date or recency when it matters
-- distinguish fact from interpretation
-- note tool/version scope
-- keep a short list of open questions instead of guessing
-
-## Recommended final answer shape
-
-- objective
-- key findings
-- evidence with links/citations
-- implications for the RFC or doc
-- risks / caveats
-- open questions
-- optional appendix with raw sources
+- consequential claim -> 1 official source + 1 corroborating source or implementation reference
+- freshness-sensitive claim -> include version or date
+- disagreement -> show both sides; do not average them away
 
 ## References
 
-Load these on demand:
-- `references/query-patterns.md` — strong query patterns for docs, RFCs, APIs, and comparisons
-- `references/tool-failover.md` — fallback guidance for Exa, parallel search, Perplexity, and page fetching
-- `references/source-quality.md` — how to rank evidence and avoid weak claims
-- `references/rfc-research-output-template.md` — a ready structure for turning research into RFC notes
+Load only as needed:
+- `references/query-patterns.md`
+- `references/tool-failover.md`
+- `references/source-quality.md`
+- `references/rfc-research-output-template.md`

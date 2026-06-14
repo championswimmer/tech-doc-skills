@@ -1,0 +1,39 @@
+{
+  "name": "championswimmer-tech-doc-skills",
+  "owner": {
+    "name": "championswimmer",
+    "url": "https://github.com/championswimmer"
+  },
+  "plugins": [
+    {
+      "name": "tech-doc-skills",
+      "source": "./",
+      "description": "Reusable Claude Code plugin for technical documentation: Mermaid diagram authoring, current web research workflows, and bundled MCP server definitions for Exa, Parallel Search, Perplexity, and Context7.",
+      "version": "0.1.0",
+      "author": {
+        "name": "championswimmer",
+        "url": "https://github.com/championswimmer"
+      },
+      "homepage": "https://github.com/championswimmer/tech-doc-skills",
+      "repository": "https://github.com/championswimmer/tech-doc-skills",
+      "license": "MIT",
+      "keywords": [
+        "claude-code-plugin",
+        "skills",
+        "mermaid",
+        "web-research",
+        "mcp",
+        "docs",
+        "rfc"
+      ],
+      "skills": "./skills",
+      "tags": [
+        "docs",
+        "research",
+        "mermaid",
+        "mcp"
+      ],
+      "category": "documentation"
+    }
+  ]
+}
