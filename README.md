@@ -2,327 +2,76 @@
 
 Portable agent skills for writing technical docs and RFCs.
 
-This repository publishes a small cross-agent skill bundle that works with:
-- **Claude Code**
-- **OpenAI Codex**
-- **OpenCode**
-- **Pi coding agent**
+This repository packages two reusable skills that work across **Claude Code**, **OpenAI Codex**, **OpenCode**, and **Pi**:
 
-It currently ships two skills:
-- `mermaid-diagrams` — create, style, template, and validate Mermaid diagrams for docs and RFCs
-- `web-research` — research current technical topics with explicit tool ordering, citations, and failover across Exa, parallel search, and Perplexity
+- `mermaid-diagrams` — write, style, template, and validate Mermaid diagrams for architecture notes, RFCs, ADRs, and READMEs
+- `web-research` — gather current technical evidence with a clear query strategy, source-quality rules, and failover across search tools
 
----
+## Install
 
-## Quick install
-
-### Install the whole bundle
-
-Project-local install for Claude Code, Codex, and OpenCode:
+Use the `skills` CLI to install the bundle from this GitHub repo:
 
 ```bash
-npx skills add championswimmer/tech-doc-skills -a claude-code codex opencode
+npx skills add championswimmer/tech-doc-skills
 ```
 
-Global install instead of project-local:
+Install just one skill if you want a narrower setup:
 
 ```bash
-npx skills add championswimmer/tech-doc-skills -g -a claude-code codex opencode
+npx skills add championswimmer/tech-doc-skills -s mermaid-diagrams
+npx skills add championswimmer/tech-doc-skills -s web-research
 ```
 
-### Install one skill only
+You can also point `skills` at the repository directly from GitHub or a local checkout if you prefer.
 
-Install only `mermaid-diagrams`:
+## What these skills do
 
-```bash
-npx skills add championswimmer/tech-doc-skills -a claude-code codex opencode -s mermaid-diagrams
-```
+### `mermaid-diagrams`
 
-Install only `web-research`:
-
-```bash
-npx skills add championswimmer/tech-doc-skills -a claude-code codex opencode -s web-research
-```
-
-Install multiple selected skills:
-
-```bash
-npx skills add championswimmer/tech-doc-skills -a claude-code codex opencode -s mermaid-diagrams web-research
-```
-
-List available skills without installing:
-
-```bash
-npx skills add championswimmer/tech-doc-skills -l -y
-```
-
-### Use a skill without installing it
-
-Generate a one-off prompt from a skill:
-
-```bash
-npx skills use championswimmer/tech-doc-skills --skill mermaid-diagrams
-npx skills use championswimmer/tech-doc-skills --skill web-research
-```
-
-If you want `skills` to launch a supported agent directly, run it from a real interactive terminal:
-
-```bash
-npx skills use championswimmer/tech-doc-skills --skill mermaid-diagrams --agent claude-code
-npx skills use championswimmer/tech-doc-skills --skill web-research --agent codex
-```
-
-> `skills use --agent ...` needs a TTY. In CI or other non-interactive shells, use prompt generation instead.
-
----
-
-## Install instructions by agent
-
-## Claude Code
-
-### Install the full plugin/skill bundle
-
-```bash
-npx skills add championswimmer/tech-doc-skills -a claude-code
-```
-
-### Install one Claude Code skill only
-
-```bash
-npx skills add championswimmer/tech-doc-skills -a claude-code -s mermaid-diagrams
-npx skills add championswimmer/tech-doc-skills -a claude-code -s web-research
-```
-
-### Use without installing
-
-```bash
-npx skills use championswimmer/tech-doc-skills --skill mermaid-diagrams
-```
-
-This repo also contains Claude-friendly layout for direct consumption:
-- `.claude-plugin/plugin.json`
-- `.claude/skills/`
-- canonical plugin `skills/`
-
-## OpenAI Codex
-
-### Install the full bundle
-
-```bash
-npx skills add championswimmer/tech-doc-skills -a codex
-```
-
-### Install one Codex skill only
-
-```bash
-npx skills add championswimmer/tech-doc-skills -a codex -s mermaid-diagrams
-npx skills add championswimmer/tech-doc-skills -a codex -s web-research
-```
-
-### Use without installing
-
-```bash
-npx skills use championswimmer/tech-doc-skills --skill web-research
-```
-
-This repo also includes Codex-compatible `.agents/skills/` shims.
-
-## OpenCode
-
-### Install the full bundle
-
-```bash
-npx skills add championswimmer/tech-doc-skills -a opencode
-```
-
-### Install one OpenCode skill only
-
-```bash
-npx skills add championswimmer/tech-doc-skills -a opencode -s mermaid-diagrams
-npx skills add championswimmer/tech-doc-skills -a opencode -s web-research
-```
-
-### Use without installing
-
-```bash
-npx skills use championswimmer/tech-doc-skills --skill mermaid-diagrams
-```
-
-This repo also includes OpenCode-compatible `.opencode/skills/` shims and shared `.agents/skills/` compatibility.
-
-## Pi coding agent
-
-Pi support is provided by the repository layout and package metadata.
-
-This repo includes:
-- `package.json` with `pi.skills: ["./skills"]`
-- `.pi/skills/` compatibility shims
-- canonical `skills/` directories
-
-### Install the full bundle for Pi
-
-Install the package from GitHub:
-
-```bash
-npm install github:championswimmer/tech-doc-skills
-```
-
-Pi can then discover the packaged `skills/` directory through `package.json` metadata.
-
-### Install one Pi skill only
-
-If you want only one skill exposed in a project-local `.pi/skills/` directory:
-
-```bash
-npm install github:championswimmer/tech-doc-skills
-mkdir -p .pi/skills
-PKG_DIR=$(node -p "require('path').dirname(require.resolve('tech-doc-skills/package.json'))")
-ln -s "$PKG_DIR/skills/mermaid-diagrams" .pi/skills/mermaid-diagrams
-```
-
-Or for the research skill:
-
-```bash
-npm install github:championswimmer/tech-doc-skills
-mkdir -p .pi/skills
-PKG_DIR=$(node -p "require('path').dirname(require.resolve('tech-doc-skills/package.json'))")
-ln -s "$PKG_DIR/skills/web-research" .pi/skills/web-research
-```
-
-### Use the repo directly with Pi
-
-If Pi is running inside this repo or a copied project tree, it can use:
-- `.pi/skills/`
-- package-provided `skills/`
-- shared skill layouts such as `.agents/skills/`, depending on your Pi setup
-
----
-
-## What this repo contains
-
-- canonical skills in `skills/`
-- a Claude Code plugin manifest in `.claude-plugin/plugin.json`
-- compatibility shims for multiple agents:
-  - `.agents/skills/`
-  - `.claude/skills/`
-  - `.opencode/skills/`
-  - `.pi/skills/`
-- Pi package metadata in `package.json` via `pi.skills`
-- research notes in `research/`
-
----
-
-## Included skills
-
-## `mermaid-diagrams`
-
-Use when you need to:
-- write Mermaid for RFCs, ADRs, READMEs, and architecture docs
-- choose the right diagram type
-- apply semantic colors and grouping
-- validate Mermaid before shipping
+Use this skill when you want to:
+- turn a design into a diagram
+- choose the right Mermaid diagram type
+- group things cleanly with subgraphs / boxes
+- apply semantic colors for actors, control planes, data stores, success, and failure
+- validate Mermaid before publishing docs
 
 Includes:
 - `scripts/validate-mermaid.js`
 - `scripts/new-mermaid-template.js`
-- diagram references and RFC-friendly patterns
+- `references/diagram-types.md`
+- `references/rfc-diagram-patterns.md`
+- `references/official-sources.md`
 
-Examples:
+### `web-research`
 
-```bash
-node skills/mermaid-diagrams/scripts/validate-mermaid.js docs/architecture.md
-node skills/mermaid-diagrams/scripts/new-mermaid-template.js flowchart --title "Docs review flow"
-```
-
-## `web-research`
-
-Use when you need to:
-- gather current technical information for docs or RFCs
-- compare tools, ecosystems, or standards
-- collect official docs, release notes, and source references
-- work with explicit failover if Exa / parallel search / Perplexity are missing
+Use this skill when you want to:
+- research current tools, standards, APIs, or ecosystem changes
+- compare options for an RFC or design doc
+- gather source-backed evidence from official docs and repos
+- keep a clear failover order if one search tool is unavailable
 
 Includes:
 - `scripts/research-plan.js`
-- references for query design, failover, source quality, and RFC-ready outputs
+- `references/query-patterns.md`
+- `references/tool-failover.md`
+- `references/source-quality.md`
+- `references/rfc-research-output-template.md`
 
-Examples:
+## How the repository is organized
 
-```bash
-node skills/web-research/scripts/research-plan.js "How are Claude plugins, Codex skills, OpenCode skills, Pi skills, and MCP servers distributed?"
-node skills/web-research/scripts/research-plan.js "What changed in Mermaid v11 for RFC diagrams?" --queries 5
-```
+- `skills/` contains the canonical skill source
+- `.claude-plugin/plugin.json` describes the plugin bundle for Claude Code
+- `.agents/skills/`, `.claude/skills/`, `.opencode/skills/`, and `.pi/skills/` point back to the same skills for compatibility
+- `research/` contains the background notes that informed the bundle
+- `package.json` advertises the skill tree for Pi
 
----
+## What are skills, plugins, and MCP?
 
-## How to ask your agent to use these skills
+- **Skill**: a reusable workflow package, centered on `SKILL.md`, with optional scripts and references
+- **Plugin**: a distributable wrapper that can ship one or more skills together
+- **MCP**: the protocol agents use to connect to external tools, resources, and prompts
 
-After install, prompts like these usually work well:
-
-- `Use the mermaid-diagrams skill to turn this architecture note into a Mermaid flowchart and validate it.`
-- `Use the web-research skill to gather current sources for this RFC and list open questions.`
-- `Use the web-research skill first, then use mermaid-diagrams to visualize the final architecture.`
-
----
-
-## Concepts in one minute
-
-### Skills
-
-A **skill** is a reusable workflow bundle:
-- `SKILL.md` instructions
-- optional `scripts/`
-- optional `references/`
-- optional assets/examples
-
-### Plugins
-
-A **plugin** is a distribution wrapper around one or more skills. In Claude Code, plugins can also bundle agents, hooks, MCP config, and helper binaries.
-
-### MCP
-
-**MCP** (Model Context Protocol) is how agents connect to external tools/resources/prompts. Skills tell the model how to use those tools well; MCP servers provide the tools themselves.
-
-For the longer research summary, see:
-- [`research/agent-skills-plugins-and-mcp.md`](research/agent-skills-plugins-and-mcp.md)
-- [`research/distribution-matrix.md`](research/distribution-matrix.md)
-
----
-
-## Agent compatibility matrix
-
-| Agent | Supported by this repo | How |
-| --- | --- | --- |
-| Claude Code | Yes | `skills/` plugin layout, `.claude-plugin/plugin.json`, and `.claude/skills/` shims |
-| OpenAI Codex | Yes | `.agents/skills/` shims and `npx skills` install flow |
-| OpenCode | Yes | `.opencode/skills/` shims plus `.agents/skills/` compatibility |
-| Pi | Yes | `package.json.pi.skills`, `.pi/skills/`, and shared skill-compatible layout |
-
----
-
-## Repo layout
-
-```text
-.
-├── .agents/skills/                 # shared-agent compatibility shims
-├── .claude-plugin/plugin.json      # Claude Code plugin metadata
-├── .claude/skills/                 # Claude project-skill shims
-├── .opencode/skills/               # OpenCode project-skill shims
-├── .pi/skills/                     # Pi project-skill shims
-├── research/                       # internet research notes for maintainers/users
-├── skills/
-│   ├── mermaid-diagrams/
-│   │   ├── SKILL.md
-│   │   ├── references/
-│   │   └── scripts/
-│   └── web-research/
-│       ├── SKILL.md
-│       ├── references/
-│       └── scripts/
-└── package.json                    # includes Pi skill-package metadata
-```
-
----
+The design goal here is simple: keep the authoring guidance in the skill, keep the reusable bundle in the plugin, and let each agent discover the same canonical content.
 
 ## Validate locally
 
@@ -332,27 +81,10 @@ npm run validate:research
 npm run validate
 ```
 
----
+## Supporting research
 
-## Authoring / maintenance notes
-
-- Keep the canonical source of truth in `skills/`
-- Keep compatibility directories as symlinks pointing back to `skills/`
-- Keep `SKILL.md` lean; move heavy detail into `references/`
-- Validate example scripts whenever the skill body changes
-- Prefer official docs and source repos in the research references
-
----
-
-## Source material used while building this bundle
-
-- Claude Code plugin docs: https://code.claude.com/docs/en/plugins
-- Claude Code skills docs: https://code.claude.com/docs/en/skills
-- OpenAI Codex skills docs: https://developers.openai.com/codex/skills
-- OpenCode skills docs: https://open-code.ai/en/docs/skills/
-- MCP intro: https://modelcontextprotocol.io/docs/getting-started/intro
-- MCP server docs: https://ts.sdk.modelcontextprotocol.io/documents/server.html
-- `skills` CLI: https://skills.sh/
+- [`research/agent-skills-plugins-and-mcp.md`](research/agent-skills-plugins-and-mcp.md)
+- [`research/distribution-matrix.md`](research/distribution-matrix.md)
 
 ## License
 
