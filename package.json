@@ -4,6 +4,7 @@
   "description": "Portable Agent Skills for technical documentation, RFC writing, Mermaid diagrams, and web research.",
   "keywords": [
     "agent-skills",
+    "agent-plugins",
     "skills.sh",
     "pi-package",
     "claude-code",
@@ -25,6 +26,7 @@
     "update:tokens": "node scripts/update-skill-token-counts.js",
     "validate:mermaid": "node skills/mermaid-diagrams/scripts/validate-mermaid.js --self-test-styles skills/mermaid-diagrams/references",
     "validate:research": "node skills/web-research/scripts/research-plan.js --self-test",
-    "validate": "npm run validate:mermaid && npm run validate:research"
+    "validate:agent-plugin": "node scripts/validate-agent-plugin.js",
+    "validate": "npm run validate:mermaid && npm run validate:research && npm run validate:agent-plugin"
   }
 }

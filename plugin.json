@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "tech-doc-skills",
+  "version": "0.1.0",
+  "description": "Portable agent plugin with reusable skills for Mermaid diagrams and technical web research, plus bundled MCP server definitions for Exa, Parallel Search, Perplexity, and Context7.",
+  "author": {
+    "name": "championswimmer",
+    "url": "https://github.com/championswimmer"
+  },
+  "homepage": "https://github.com/championswimmer/tech-doc-skills",
+  "repository": "https://github.com/championswimmer/tech-doc-skills",
+  "license": "MIT",
+  "keywords": [
+    "agent-plugins",
+    "claude-code-plugin",
+    "skills",
+    "mermaid",
+    "web-research",
+    "mcp",
+    "docs",
+    "rfc"
+  ]
+}

@@ -9,6 +9,8 @@ This repo is the canonical source for two reusable skills:
 
 These skills are designed to work with **Claude Code**, **OpenAI Codex**, **OpenCode**, and **Pi** through the same canonical `skills/` tree.
 
+This repo is a **dual-format plugin**: a [Claude Code plugin](https://code.claude.com/docs/en/plugins) (manifest in `.claude-plugin/`) **and** an [Agent Plugins 1.0.0](https://agent-plugins.org) compliant plugin (root `plugin.json` + `mcp.json`), usable from clients like VS Code (GitHub Copilot), Copilot CLI, Cursor, and Antigravity. See [AGENT_PLUGIN_CONVERSION.md](AGENT_PLUGIN_CONVERSION.md) for notes on the format differences.
+
 <!-- skill-token-counts:start -->
 ## Estimated skill token counts
 
@@ -74,6 +76,41 @@ export EXA_API_KEY=...
 
 `context7` does not need an API key here.
 
+### Agent Plugins 1.0.0 (VS Code, Copilot CLI, Cursor, Antigravity)
+
+This repo is also compliant with the vendor-neutral [Agent Plugins 1.0.0](https://agent-plugins.org) spec: the manifest is the root [`plugin.json`](plugin.json), MCP servers are declared in the root [`mcp.json`](mcp.json), and skills are auto-discovered from `skills/`.
+
+**VS Code (GitHub Copilot)** — requires the `chat.plugins.enabled` setting:
+
+1. Open the Command Palette and run **Chat: Install Plugin From Source**
+2. Enter the repo URL: `https://github.com/championswimmer/tech-doc-skills`
+
+**GitHub Copilot CLI**:
+
+```bash
+copilot plugin install https://github.com/championswimmer/tech-doc-skills
+```
+
+**Cursor** — install as a local plugin:
+
+```bash
+mkdir -p ~/.cursor/plugins/local
+git clone https://github.com/championswimmer/tech-doc-skills ~/.cursor/plugins/local/tech-doc-skills
+```
+
+Then reload the window (or restart Cursor) so it picks up the plugin.
+
+**Antigravity** — install from a local clone:
+
+```bash
+git clone https://github.com/championswimmer/tech-doc-skills
+agy plugin install ./tech-doc-skills
+```
+
+#### A note on MCP API keys under Agent Plugins 1.0.0
+
+The bundled MCP servers `perplexity`, `parallel-search`, and `exa` need API keys (`PERPLEXITY_API_KEY`, `PARALLEL_API_KEY`, `EXA_API_KEY`). Unlike Claude Code, the Agent Plugins 1.0.0 spec does **not** define environment-variable expansion in `mcp.json` (only `${PLUGIN_ROOT}` / `${PLUGIN_DATA}` are expanded), so the `${...}` placeholders in `mcp.json` are resolved — or not — by each client. If a server fails to authenticate, configure the key through your client's own MCP secret mechanism (e.g. VS Code `${env:VAR}` / input variables) or replace the placeholder in `mcp.json` with the real key. `context7` needs no key and works as-is. See [AGENT_PLUGIN_CONVERSION.md](AGENT_PLUGIN_CONVERSION.md) for details.
+
 ## What these skills do
 
 ### `mermaid-diagrams`
@@ -115,8 +152,17 @@ Includes:
 ```text
 .
 ├── README.md
+├── AGENT_PLUGIN_CONVERSION.md   # notes on the Claude Code → Agent Plugins conversion
 ├── LICENSE
 ├── package.json
+├── plugin.json                  # Agent Plugins 1.0.0 manifest
+├── mcp.json                     # Agent Plugins 1.0.0 MCP server definitions
+├── scripts/
+│   ├── update-skill-token-counts.js
+│   └── validate-agent-plugin.js # Agent Plugins 1.0.0 validator
+├── .claude-plugin/
+│   ├── plugin.json              # Claude Code plugin manifest
+│   └── marketplace.json         # Claude Code marketplace metadata
 └── skills/
     ├── mermaid-diagrams/
     │   ├── SKILL.md
@@ -134,7 +180,8 @@ Includes:
 npm run update:tokens
 npm run validate:mermaid
 npm run validate:research
-npm run validate
+npm run validate:agent-plugin   # validates plugin.json + mcp.json against Agent Plugins 1.0.0 rules
+npm run validate                # all of the validators above
 ```
 
 ## License
